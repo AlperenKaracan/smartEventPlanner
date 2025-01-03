@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Etkinlikler</h2>
+
+    <form method="GET" action="{{ url_for('main.index') }}" class="form-inline justify-content-center mb-4">
+        <div class="form-group mx-2">
+            <label for="category" class="mr-2">Kategori</label>
+            <select name="category" id="category" class="form-control">
+                <option value="">Tüm Kategoriler</option>
+                {% for category in categories %}
+                    <option value="{{ category }}" {% if category_filter == category %}selected{% endif %}>{{ category }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group mx-2">
+            <label for="location" class="mr-2">Konum</label>
+            <select name="location" id="location" class="form-control">
+                <option value="">Tüm Konumlar</option>
+                {% for location in locations %}
+                    <option value="{{ location }}" {% if location_filter == location %}selected{% endif %}>{{ location }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary mx-2">Filtrele</button>
+        <a href="{{ url_for('main.index') }}" class="btn btn-secondary">Temizle</a>
+    </form>
+
+    <div class="event-card-container">
+        {% for event in events.items %}
+            <div class="event-card">
+                <h5>{{ event.name }}</h5>
+                <p>{{ event.description[:50] }}...</p>
+                <p><strong>Kategori:</strong> {{ event.category }}</p>
+                <p><strong>Konum:</strong> {{ event.location }}</p>
+                <a href="{{ url_for('events.event_details', event_id=event.id) }}" class="btn btn-primary">Detaylar</a>
+            </div>
+        {% else %}
+            <p class="text-center">Filtreleme kriterlerine uygun etkinlik bulunamadı.</p>
+        {% endfor %}
+    </div>
+
+    <nav>
+        <ul class="pagination justify-content-center">
+            {% if events.has_prev %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('main.index', page=events.prev_num, category=category_filter, location=location_filter) }}">Önceki</a>
+                </li>
+            {% endif %}
+            {% for page_num in events.iter_pages() %}
+                {% if page_num %}
+                    <li class="page-item {% if page_num == events.page %}active{% endif %}">
+                        <a class="page-link" href="{{ url_for('main.index', page=page_num, category=category_filter, location=location_filter) }}">{{ page_num }}</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                {% endif %}
+            {% endfor %}
+            {% if events.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('main.index', page=events.next_num, category=category_filter, location=location_filter) }}">Sonraki</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endblock %}

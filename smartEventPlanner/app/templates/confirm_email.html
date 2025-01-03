@@ -1,0 +1,16 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>E-posta Doğrulama</title>
+</head>
+<body>
+    <h2>Merhaba {{ user.first_name }},</h2>
+    <p>Hesabınızı etkinleştirmek için lütfen aşağıdaki bağlantıya tıklayın:</p>
+    <p><a href="{{ confirm_url }}">E-postamı Doğrula</a></p>
+    <p>Bu bağlantı 1 saat içinde geçersiz olacaktır.</p>
+    <p>Eğer bu isteği siz yapmadıysanız, lütfen bu e-postayı dikkate almayın.</p>
+    <p>Teşekkürler,<br>Akıllı Etkinlik Planlama Ekibi</p>
+</body>
+</html>

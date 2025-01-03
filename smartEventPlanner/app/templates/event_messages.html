@@ -1,0 +1,34 @@
+
+{% extends "base.html" %}
+{% block title %}{{ event.name }} Mesajları{% endblock %}
+{% block content %}
+<h2>{{ event.name }} - Mesajlar</h2>
+<div class="card mb-4">
+    <div class="card-body">
+        <p><strong>Açıklama:</strong> {{ event.description }}</p>
+        <p><strong>Tarih:</strong> {{ event.date.strftime('%Y-%m-%d %H:%M') }}</p>
+        <p><strong>Konum:</strong> {{ event.location }}</p>
+    </div>
+</div>
+
+<h3>Mesajlar</h3>
+<ul class="list-group mb-4">
+    {% for message in messages %}
+        <li class="list-group-item">
+            <strong>{{ message.sender.username }}:</strong> {{ message.content }}
+            <span class="text-muted float-right">{{ message.timestamp.strftime('%Y-%m-%d %H:%M') }}</span>
+        </li>
+    {% else %}
+        <li class="list-group-item">Henüz mesaj yok.</li>
+    {% endfor %}
+</ul>
+
+<h3>Mesaj Gönder</h3>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.content.label }} {{ form.content(class="form-control", rows=3) }}
+    </div>
+    {{ form.submit(class="btn btn-primary") }}
+</form>
+{% endblock %}

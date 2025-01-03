@@ -1,0 +1,53 @@
+
+{% extends "base.html" %}
+{% block title %}Profil{% endblock %}
+{% block content %}
+<h2>Profil</h2>
+<img src="{{ profile_image }}" alt="Profil Resmi" class="img-thumbnail mb-3" width="150">
+<form method="POST" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <div class="form-group">
+        {{ form.username.label }} {{ form.username(class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.email.label }} {{ form.email(class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.first_name.label }} {{ form.first_name(class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.last_name.label }} {{ form.last_name(class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.interests.label }} {{ form.interests(class="form-control") }}
+    </div>
+    <div class="form-group">
+        {{ form.profile_image.label }} {{ form.profile_image(class="form-control-file") }}
+    </div>
+    {{ form.submit(class="btn btn-primary") }}
+</form>
+
+<h3 class="mt-5">Katıldığınız Etkinlikler</h3>
+<ul class="list-group">
+    {% for attendee in current_user.attended_events %}
+        <li class="list-group-item">
+            <a href="{{ url_for('events.event_details', event_id=attendee.event.id) }}">{{ attendee.event.name }}</a>
+            <span class="text-muted">({{ attendee.event.date.strftime('%Y-%m-%d %H:%M') }})</span>
+        </li>
+    {% else %}
+        <li class="list-group-item">Henüz bir etkinliğe katılmadınız.</li>
+    {% endfor %}
+</ul>
+
+<h3 class="mt-5">Puanlarınız ve Rozetleriniz</h3>
+<ul class="list-group">
+    {% for point in points %}
+        <li class="list-group-item">
+            <strong>Puan:</strong> {{ point.score }} - <strong>Rozet:</strong> {{ point.badge }}
+            <span class="text-muted">({{ point.earned_date.strftime('%Y-%m-%d %H:%M') }})</span>
+        </li>
+    {% else %}
+        <li class="list-group-item">Henüz puanınız veya rozetiniz yok.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Etkinlik Detayları{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4">{{ event.name }}</h2>
+
+    <div class="card shadow-sm p-4">
+        <p><strong>Açıklama:</strong> {{ event.description }}</p>
+        <p><strong>Tarih:</strong> {{ event.date.strftime('%Y-%m-%d %H:%M') }}</p>
+        <p><strong>Konum:</strong> {{ event.location }}</p>
+        <p><strong>Kategori:</strong> {{ event.category }}</p>
+        <p><strong>Düzenleyen:</strong> {{ event.organizer.username }}</p>
+
+        {% if current_user.is_authenticated %}
+            <div class="mt-4">
+                {% if is_attending %}
+                    <a href="{{ url_for('events.leave_event', event_id=event.id) }}" class="btn btn-warning mr-2">Etkinlikten Ayrıl</a>
+                {% else %}
+                    <a href="{{ url_for('events.join_event', event_id=event.id) }}" class="btn btn-success mr-2">Etkinliğe Katıl</a>
+                {% endif %}
+                {% if current_user == event.organizer or current_user.is_admin() %}
+                    <a href="{{ url_for('events.edit_event', event_id=event.id) }}" class="btn btn-info mr-2">Etkinliği Düzenle</a>
+                    <form method="POST" action="{{ url_for('events.delete_event', event_id=event.id) }}" style="display:inline;">
+                        {{ form.hidden_tag() }}
+                        <button type="submit" class="btn btn-danger mr-2">Etkinliği Sil</button>
+                    </form>
+                {% endif %}
+                <a href="{{ url_for('messaging.event_messages', event_id=event.id) }}" class="btn btn-secondary">Mesajlar</a>
+            </div>
+        {% else %}
+            <p class="mt-4">Etkinliğe katılmak ve mesajları görmek için <a href="{{ url_for('auth.login') }}">giriş yapın</a>.</p>
+        {% endif %}
+    </div>
+
+    <h3 class="mt-5">Katılımcılar</h3>
+    <ul class="list-group mt-3">
+        {% for attendee in event.attendees %}
+            <li class="list-group-item">{{ attendee.user.username }}</li>
+        {% else %}
+            <li class="list-group-item">Henüz katılımcı yok.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

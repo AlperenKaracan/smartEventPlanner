@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}Kullanıcı Listesi{% endblock %}
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-5 fw-bold text-primary">Kullanıcı Listesi</h2>
+
+    <div class="d-flex justify-content-end mb-4">
+        <a href="{{ url_for('admin.approve_events') }}" class="btn btn-outline-primary shadow-sm px-4 py-2">
+            <i class="bi bi-check-circle-fill"></i> Etkinlik Onaylama
+        </a>
+    </div>
+
+    <table class="table table-bordered table-hover shadow-sm">
+        <thead class="table-primary">
+            <tr>
+                <th>ID</th>
+                <th>Kullanıcı Adı</th>
+                <th>E-posta</th>
+                <th>Ad</th>
+                <th>Soyad</th>
+                <th>Rol</th>
+                <th>Durum</th>
+                <th>Puan</th>
+                <th>İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td><a href="{{ url_for('auth.view_profile', user_id=user.id) }}">{{ user.username }}</a></td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.first_name }}</td>
+                <td>{{ user.last_name }}</td>
+                <td>
+                    {% if user.role == 'admin' %}
+                        <span class="badge bg-warning text-dark">Admin</span>
+                    {% else %}
+                        <span class="badge bg-info text-white">User</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if user.is_confirmed %}
+                        <span class="badge bg-success">Onaylı</span>
+                    {% else %}
+                        <span class="badge bg-danger">Onaysız</span>
+                    {% endif %}
+                </td>
+                <td>{{ user.total_score }}</td>
+                <td>
+                    {% if user.role != 'admin' %}
+                    <!-- Silme Butonu -->
+                    <form action="{{ url_for('admin.delete_user', user_id=user.id) }}" method="post" style="display: inline-block;">
+                        {{ empty_form.hidden_tag() }}
+                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Bu kullanıcıyı silmek istediğinize emin misiniz?');">
+                            Sil
+                        </button>
+                    </form>
+                    {% else %}
+                    <span class="text-muted">Admin</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
